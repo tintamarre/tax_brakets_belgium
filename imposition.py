@@ -1,6 +1,7 @@
 from rich import print
 import matplotlib.pyplot as plt
 import pandas as pd
+import os
 
 # Define tax brackets
 current_tax_brackets = {
@@ -47,37 +48,64 @@ def generate_tax_report(revenues, systems) -> str:
     """
     Generate tax data for given revenues and taxation systems.
     """
-    data = "system,revenue,tax\n"
+    data = "system_name1,tax1,system_name2,tax2,revenue\n"
     for revenue in revenues:
         for system_name, system in systems.items():
             tax = calculate_total_tax(revenue, system)
-            data += f"{system_name},{revenue},{tax}\n"
-            print(f"Revenue: {revenue} - Tax ({system_name}): {tax}")
+            data += f"{system_name},{tax},"
+        data += f"{revenue}\n"
     return data
 
 def save_report_to_csv(data, file_path) -> None:
     """
     Save data to a CSV file.
     """
+    # delete file if it already exists
+    if os.path.exists(file_path):
+        os.remove(file_path)
     with open(file_path, 'w') as f:
         f.write(data)
+        
+def enrich_data(file_path) -> None:
+    """
+    Enrich data from a CSV file.
+    """
+    df = pd.read_csv(file_path)
+    df['rate1'] = df['tax1'] / df['revenue']
+    df['rate2'] = df['tax2'] / df['revenue']
+    df['diff'] = ((df['tax1'] - df['tax2']) / df['revenue']).abs() * 100
+    df.to_csv(file_path, index=False)
 
-def plot_tax_report(file_path, output_image) -> None:
+    return df
+
+def plot_tax_report(df, output_image) -> None:
     """
     Plot tax data from a CSV file and save as an image.
     """
-    df = pd.read_csv(file_path)
-    df['rate'] = df['tax'] / df['revenue']
-    df = df.groupby(['system', 'revenue']).sum().reset_index()
 
-    fig, ax = plt.subplots()
-    for key, grp in df.groupby(['system']):
-        grp.plot(ax=ax, kind='line', x='revenue', y='rate', label=key)
+    plt.figure(figsize=(10, 6))
+    plt.plot(df['revenue'], df['rate1'], label='current_system')
+    plt.plot(df['revenue'], df['rate2'], label='super-nota-bart-de-wever')
+    plt.xlabel('Revenue')
+    plt.ylabel('Tax rate')
+    plt.title('Tax rate as a function of revenue')
+    plt.legend(loc='lower right')
+    # on other axis plot difference between the two systems
+    plt.twinx()
+    
+    plt.plot(df['revenue'], df['diff'], label='difference', color='orange', linestyle='--')
+    plt.ylabel('Difference (%)')
+    
+    # add a line for median revenue at 4,076 euros per month (2022 data statbel)
+    plt.axvline(x=4076 * 12, color='grey', linestyle='--', label='Median revenue')
+    
+    # add legend
+    plt.legend()
     
     plt.savefig(output_image)
 
 # Main execution
-revenue_range = range(5000, 200000, 100)
+revenue_range = range(5000, 200000, 500)
 systems = {
     "current_system": current_tax_brackets,
     "super-nota-bart-de-wever": new_tax_brackets
@@ -86,4 +114,5 @@ systems = {
 data = generate_tax_report(revenue_range, systems)
 csv_file = "./imposition.csv"
 save_report_to_csv(data, csv_file)
-plot_tax_report(csv_file, 'imposition.png')
+df = enrich_data(csv_file)
+plot_tax_report(df, 'imposition.png')
