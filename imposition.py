@@ -85,10 +85,11 @@ def plot_tax_report(df, output_image) -> None:
     ax2.set_ylabel('Difference (%)')
 
     # Add a line for median revenue at 4,076 euros per month (2022 data statbel)
-    plt.axvline(x=4076 * 12, color='green', linestyle='--', label='Median Revenue')
-
+    plt.axvline(x=4076 * 13.92, color='purple', linestyle='--', label='Median Revenue * 13.92')
+    plt.axvline(x=4076 * 12, color='green', linestyle='--', label='Median Revenue * 12')
+    
     # Add legend
-    plt.legend()
+    plt.legend(loc='center right')
     plt.savefig(output_image)
 
 # Main execution
