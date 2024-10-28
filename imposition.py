@@ -61,9 +61,9 @@ def enrich_data(df) -> pd.DataFrame:
     """
     Enrich data from a DataFrame.
     """
-    df['rate_super_nota_bart_de_wever_102024'] = df['super_nota_bart_de_wever_102024_tax'] / df['revenue']
+    df['rate_super_nota_bart_de_wever_202410'] = df['super_nota_bart_de_wever_202410_tax'] / df['revenue']
     df['rate_current_system'] = df['current_system_tax'] / df['revenue']
-    df['diff'] = ((df['rate_current_system'] - df['rate_super_nota_bart_de_wever_102024']) / df['rate_current_system']).abs() * 100
+    df['diff'] = ((df['rate_current_system'] - df['rate_super_nota_bart_de_wever_202410']) / df['rate_current_system']).abs() * 100
     df.to_csv("./imposition.csv", index=False)
     return df
 
@@ -73,7 +73,7 @@ def plot_tax_report(df, output_image) -> None:
     """
     plt.figure(figsize=(10, 6))
     plt.plot(df['revenue'], df['rate_current_system'], label='Current System')
-    plt.plot(df['revenue'], df['rate_super_nota_bart_de_wever_102024'], label='Super Nota Bart De Wever 102024')
+    plt.plot(df['revenue'], df['rate_super_nota_bart_de_wever_202410'], label='Super Nota Bart De Wever 202410')
     plt.xlabel('Revenue')
     plt.ylabel('Tax Rate')
     plt.title('Comparison of Tax Bracket Systems in Belgium')
@@ -96,7 +96,7 @@ if __name__ == "__main__":
     revenue_range = range(5000, 200000, 500)
     systems = {
         "current_system": current_tax_brackets,
-        "super_nota_bart_de_wever_102024": new_tax_brackets
+        "super_nota_bart_de_wever_202410": new_tax_brackets
     }
 
     df = generate_tax_report(revenue_range, systems)
