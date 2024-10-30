@@ -24,6 +24,18 @@ new_tax_brackets = {
     ]
 }
 
+deciles_salaries_in_belgium = [
+    {"decile": 1, "salary": 2443},
+    {"decile": 2, "salary": 2782},
+    {"decile": 3, "salary": 3058},
+    {"decile": 4, "salary": 3421},
+    {"decile": 5, "salary": 3728},
+    {"decile": 6, "salary": 4062},
+    {"decile": 7, "salary": 4398},
+    {"decile": 8, "salary": 5058},
+    {"decile": 9, "salary": 6305}
+]
+
 def calculate_total_tax(revenue, tax_brackets) -> float:
     """
     Calculate the tax to be paid based on revenue and tax brackets.
@@ -86,7 +98,9 @@ def plot_tax_report(df, output_image) -> None:
 
     # Add a line for median revenue at 4,076 euros per month (2022 data statbel)
     plt.axvline(x=4076 * 13.92, color='purple', linestyle='--', label='Median Revenue * 13.92')
-    plt.axvline(x=4076 * 12, color='green', linestyle='--', label='Median Revenue * 12')
+    
+    # for decile in deciles_salaries_in_belgium:
+    #     plt.axvline(x=decile['salary'] * 13.92, color='red', linestyle='--', label=f"Decile {decile['decile']}")
     
     # Add legend
     plt.legend(loc='center right')
