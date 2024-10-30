@@ -102,13 +102,17 @@ def plot_tax_report(df, output_image) -> None:
     # for decile in deciles_salaries_in_belgium:
     #     plt.axvline(x=decile['salary'] * 13.92, color='red', linestyle='--', label=f"Decile {decile['decile']}")
     
+    # add a avg line of difference
+    avg_diff = df['diff'].mean()
+    plt.axhline(y=avg_diff, color='green', linestyle='--', label=f'AVG diff btw systems ({round(avg_diff, 1)}%)')
+    
     # Add legend
     plt.legend(loc='center right')
     plt.savefig(output_image)
 
 # Main execution
 if __name__ == "__main__":
-    revenue_range = range(5000, 200000, 500)
+    revenue_range = range(1000 * 12, 10000 * 12, 500)
     systems = {
         "current_system": current_tax_brackets,
         "super_nota_bart_de_wever_202410": new_tax_brackets
