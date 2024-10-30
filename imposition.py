@@ -73,8 +73,8 @@ def enrich_data(df) -> pd.DataFrame:
     """
     Enrich data from a DataFrame.
     """
-    df['rate_super_nota_bart_de_wever_202410'] = df['super_nota_bart_de_wever_202410_tax'] / df['revenue']
-    df['rate_current_system'] = df['current_system_tax'] / df['revenue']
+    df['rate_super_nota_bart_de_wever_202410'] = df['super_nota_bart_de_wever_202410_tax'] / df['revenue'] * 100
+    df['rate_current_system'] = df['current_system_tax'] / df['revenue'] * 100
     df['diff'] = ((df['rate_current_system'] - df['rate_super_nota_bart_de_wever_202410']) / df['rate_current_system']).abs() * 100
     df.to_csv("./imposition.csv", index=False)
     return df
@@ -86,8 +86,8 @@ def plot_tax_report(df, output_image) -> None:
     plt.figure(figsize=(10, 6))
     plt.plot(df['revenue'], df['rate_current_system'], label='Current System')
     plt.plot(df['revenue'], df['rate_super_nota_bart_de_wever_202410'], label='Super Nota Bart De Wever 202410')
-    plt.xlabel('Revenue')
-    plt.ylabel('Tax Rate')
+    plt.xlabel('Income per declaration in euros')
+    plt.ylabel('Tax rate (%)')
     plt.title('Comparison of Tax Bracket Systems in Belgium')
     plt.legend(loc='lower right')
 
@@ -97,7 +97,8 @@ def plot_tax_report(df, output_image) -> None:
     ax2.set_ylabel('Difference (%)')
 
     # Add a line for median revenue at 4,076 euros per month (2022 data statbel)
-    plt.axvline(x=4076 * 13.92, color='green', linestyle=':', label='Median Revenue * 13.92')
+    # plt.axvline(x=4076 * 13.92, color='green', linestyle=':', label='Median Revenue * 13.92')
+    plt.axvline(x=26917, color='green', linestyle=':', label='Median Income (Source: statbel 2021)')
     
     # for decile in deciles_salaries_in_belgium:
     #     plt.axvline(x=decile['salary'] * 13.92, color='red', linestyle='--', label=f"Decile {decile['decile']}")
