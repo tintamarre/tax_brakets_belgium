@@ -97,14 +97,14 @@ def plot_tax_report(df, output_image) -> None:
     ax2.set_ylabel('Difference (%)')
 
     # Add a line for median revenue at 4,076 euros per month (2022 data statbel)
-    plt.axvline(x=4076 * 13.92, color='purple', linestyle='--', label='Median Revenue * 13.92')
+    plt.axvline(x=4076 * 13.92, color='green', linestyle=':', label='Median Revenue * 13.92')
     
     # for decile in deciles_salaries_in_belgium:
     #     plt.axvline(x=decile['salary'] * 13.92, color='red', linestyle='--', label=f"Decile {decile['decile']}")
     
     # add a avg line of difference
     avg_diff = df['diff'].mean()
-    plt.axhline(y=avg_diff, color='green', linestyle='--', label=f'AVG diff btw systems ({round(avg_diff, 1)}%)')
+    plt.axhline(y=avg_diff, color='purple', linestyle='--', label=f'AVG diff btw systems ({round(avg_diff, 1)}%)')
     
     # Add legend
     plt.legend(loc='center right')
